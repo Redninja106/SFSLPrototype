@@ -10,7 +10,7 @@ namespace SFSLPrototype;
 internal class TokenReader
 {
     private readonly Stack<int> locations = new();
-    private readonly Token[] tokens;
+    private readonly TokenNode[] tokens;
 
     public int Location
     {
@@ -22,40 +22,67 @@ internal class TokenReader
         }
     }
 
-    public Token Current => locations.Peek() < 0 ? null : tokens[locations.Peek()];
+    public TokenNode Current => locations.Peek() < 0 ? null : tokens[locations.Peek()];
 
     public int CountRemaining => tokens.Length - (locations.Peek() + 1);
 
     public bool IsAtEnd => (locations.Peek() + 1) >= tokens.Length;
 
-    public TokenReader(Token[] tokens)
+    public TokenReader(TokenNode[] tokens)
     {
         this.tokens = tokens;
-        locations.Push(-1);
+        locations.Push(0);
     }
 
-    public Token GetNext(int amount = 1)
+    public TokenNode PeekToken(int offset = 0)
     {
-        return tokens[locations.Peek() + amount];
+        if (Location + offset >= tokens.Length)
+            return null;
+
+        return tokens[Location + offset];
     }
 
-    public Token MoveNext()
+    public TokenNode EatToken()
     {
-        return TryMoveNext(out Token token) ? token : throw new Exception("There are no more tokens!"); 
+        var t = Current;
+        Location++;
+        return t;
     }
 
-    public bool TryMoveNext(out Token token)
+    public TokenNode EatToken(TokenKind kind)
     {
-        token = null;
-        
-        if (IsAtEnd)
-            return false;
-
-        locations.Push(locations.Pop() + 1);
-
-        token = tokens[locations.Peek()];
-        return true;
+        return EatTokenOrNull(kind) ?? TokenNode.CreateMissing(kind);
     }
+
+    public TokenNode EatTokenOrNull(TokenKind kind)
+    {
+        if (Current.Kind != kind)
+            return null;
+        return EatToken();
+    }
+
+    //public Token GetNext(int amount = 1)
+    //{
+    //    return tokens[locations.Peek() + amount];
+    //}
+
+    //public Token MoveNext()
+    //{
+    //    return TryMoveNext(out Token token) ? token : throw new Exception("There are no more tokens!"); 
+    //}
+
+    //public bool TryMoveNext(out Token token)
+    //{
+    //    token = null;
+
+    //    if (IsAtEnd)
+    //        return false;
+
+    //    locations.Push(locations.Pop() + 1);
+
+    //    token = tokens[locations.Peek()];
+    //    return true;
+    //}
 
     public void PushLocation()
     {

@@ -4,46 +4,23 @@ using System.Linq;
 using System.Linq.Expressions;
 using System.Text;
 using System.Threading.Tasks;
-using SFSLPrototype.Declarations;
+using SFSLPrototype.AST;
 
 namespace SFSLPrototype.Emit.GLSL;
 
-internal class GlslEmitter : IEmitter
+internal class GlslEmitter : Emitter
 {
-    TextWriter writer;
-
-    public GlslEmitter(TextWriter writer)
+    public GlslEmitter(TextWriter writer) : base(writer)
     {
-        this.writer = writer;
     }
 
-    public ExpressionVisitor GetExpressionVisitor()
+    public override void Flush()
     {
         throw new NotImplementedException();
     }
 
-    public void VisitBuffer(BufferDeclaration declaration)
+    public override void Visit(VariableNode node)
     {
-        throw new NotImplementedException();
-    }
-
-    public void VisitFunction(FunctionDeclaration declaration)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void VisitStruct(StructDeclaration declaration)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void VisitTexture(TextureDeclaration declaration)
-    {
-        throw new NotImplementedException();
-    }
-
-    public void VisitVariable(VariableDeclaration declaration)
-    {
-        throw new NotImplementedException();
+        
     }
 }
