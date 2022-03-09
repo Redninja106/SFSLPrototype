@@ -4,11 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace SFSLPrototype.Declarations;
+namespace SFSLPrototype.AST;
 
-enum VariableModifier 
-{ 
-    None, 
-    In, 
-    Out 
-};
+public record UnaryExpression(TokenNode Operator, Expression Target) : Expression
+{
+}
